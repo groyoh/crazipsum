@@ -1,4 +1,5 @@
 # Crazipsum
+![travis](https://travis-ci.org/groyoh/crazipsum.svg?branch=master) [![Coverage Status](https://coveralls.io/repos/github/groyoh/crazipsum/badge.svg?branch=master)](https://coveralls.io/github/groyoh/crazipsum?branch=master) [![Gem Version](https://badge.fury.io/rb/crazipsum.svg)](https://badge.fury.io/rb/crazipsum)
 
 Ever wanted some dumber, crazier (fancier?) lorem ipsum? Here you go!
 
