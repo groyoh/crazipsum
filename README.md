@@ -34,8 +34,8 @@ fruit_ipsum.sentence(word_count: 5)
 fruit_ipsum.sentence(word_count: 5, fillers: false)
   # => "Jackfruit mangosteen melon raspberry nectarine."
 
-fruit_ipsum.sentence(fillers: false)
-  # => ""Pear watermelon jujube persimmon nostrud."
+fruit_ipsum.sentence(word_count: 5, fillers: ["yum"])
+  # => "Yum yum yum yum mulberry."
 
 fruit_ipsum.paragraph(sentence_count: 3)
   # => "Laborum dolore elderberry cherimoya coconut exercitation dolor banana fugiat watermelon passion fruit. Commodo ut id mollit non tangerine berry reprehenderit lingonberry tamarillo cupidatat kumquat quis. Raisin fig berry in sunt eu rhubarb."
