@@ -23,33 +23,40 @@ Or install it yourself as:
 
 ```ruby
 require 'crazipsum'
+
 fruit_ipsum = Crazipsum(:fruit)
 
-fruit_ipsum.sentence
-  # => "Minim ut eiusmod gooseberry acai berry mangosteen raspberry quis rhubarb enim fig grape nulla duis."
+fruit_ipsum.sentence # => "Tangerine berry ut incididunt java-plum enim labore."
 
-fruit_ipsum.sentence(word_count: 5)
-  # => "Pear watermelon jujube persimmon nostrud."
+fruit_ipsum.sentence(word_count: 5) # => "Pummelo sed coconut veniam occaecat."
 
-fruit_ipsum.sentence(word_count: 5, fillers: false)
-  # => "Jackfruit mangosteen melon raspberry nectarine."
+fruit_ipsum.sentence(word_count: 5, fillers: false) # => "Raspberry youngberry jujube tangerine pomegranate."
 
-fruit_ipsum.sentence(word_count: 5, fillers: ["yum"])
-  # => "Yum yum yum yum mulberry."
+fruit_ipsum.sentence(word_count: 5, fillers: ["yum", "yum"]) # => "Yum mangosteen yum melon acaiberry."
 
-fruit_ipsum.paragraph(sentence_count: 3)
-  # => "Laborum dolore elderberry cherimoya coconut exercitation dolor banana fugiat watermelon passion fruit. Commodo ut id mollit non tangerine berry reprehenderit lingonberry tamarillo cupidatat kumquat quis. Raisin fig berry in sunt eu rhubarb."
+fruit_ipsum.paragraph(sentence_count: 3, word_count: 2, fillers: false) # => "Grape lime. Elderberry tayberry. Date starfruit."
 
-fruit_ipsum.paragraphs(word_count: 2, sentence_count: 2, paragraph_count: 2)
-  # => "Id ipsum. Rowanberry pear.\n\nOrange dolore. Sunt mangosteen."
+fruit_ipsum.paragraphs(word_count: 2, sentence_count: 2, paragraph_count: 2) # => "Apple starfruit. Dewberry cherimoya.\n\nTangelo apple. Persimmon tamarillo."
+
+# Register a custom lorem ipsum.
+Crazipsum.register(
+  :superhero,
+  ["Batman", "Superman", "Iron Man"]
+)
+
+Crazipsum(:superhero).sentence(word_count: 5) # => "Eiusmod laboris Iron Man Batman in."
 ```
 
 The available dictionnaries are:
-* [`fruit`](data/fruit.txt)
-* [`religion`](data/religion.txt)
-* [`programming_language`](data/programming_language.txt)
-* [`mineral`](data/mineral.txt)
+* [`car_make`](data/car_make.txt)
 * [`phobia`](data/phobia.txt)
+* [`programming_language`](data/programming_language.txt)
+* [`animal`](data/animal.txt)
+* [`fruit`](data/fruit.txt)
+* [`constellation`](data/constellation.txt)
+* [`mineral`](data/mineral.txt)
+* [`religion`](data/religion.txt)
+* [`country`](data/country.txt)
 
 ## License
 

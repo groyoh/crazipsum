@@ -1,86 +1,57 @@
+# frozen_string_literal: true
+
 require 'crazipsum/version'
+require 'crazipsum/registry'
 
-class Crazipsum
-  REGISTER = Hash.new { Crazipsum.new([], fillers: false) }
+data_dir = File.expand_path('../data', __dir__)
+DEFAULT_FILLERS = File.read(File.join(data_dir, 'fillers.txt')).split("\n")
 
-  class << self
-    def register(type, path, opts = {})
-      fillers        = opts[:fillers]
-      opts[:fillers] = parse_dictionnary(local_dictionnary_path(:fillers)) if fillers.nil? || fillers
-      words          = parse_dictionnary(path)
-      REGISTER[type] = new(words, opts)
-    end
+# Ever wanted some dumber, crazier (fancier?) lorem ipsum? Here you go!
+module Crazipsum
+  module_function
 
-    private
-
-    def parse_dictionnary(path_or_array)
-      return path_or_array if path_or_array.is_a?(Array)
-      file_content = File.read(path_or_array)
-      file_content.split("\n")
-    end
-
-    def register_from_gem(type)
-      register(type, local_dictionnary_path(type))
-    end
-
-    def local_dictionnary_path(type)
-      File.expand_path("../../data/#{type}.txt", __FILE__)
-    end
+  # Registers a new type of Dictionnary that can later be retrieved with Crazipsum().
+  #
+  # @param [String,Symbol] type a name for that dictionnary. This type will be
+  #                        used later when calling `Crazipsum(type)`.
+  # @param [Array<String>] words a list of words used when generating the lorem ipsum.
+  # @param [Array<String>] fillers a list of words used to fill in the sentences when generating the lorem ipsum.
+  def register(type, words, fillers: DEFAULT_FILLERS)
+    Crazipsum::Registry.instance.register(type, words, fillers: fillers)
   end
-
-  def sentence(opts = {})
-    quantity         = opts[:word_count] || rand(7..15)
-    quantity         = 0 if quantity < 0
-    sentence_fillers = opts[:fillers]
-    sentence_fillers = fillers if sentence_fillers.nil?
-    dict             = dictionnary
-    words = (0...quantity).map do
-      next dict.sample unless sentence_fillers
-      rand(3) == 0 ? dict.sample : sentence_fillers.sample
-    end
-    return '' if words.empty?
-    words[0] = words[0].capitalize
-    words    = words.join(' ')
-    "#{words}."
-  end
-
-  def paragraph(opts = {})
-    quantity  = opts[:sentence_count] || rand(4..7)
-    paragraph = []
-    quantity.times do
-      s = sentence(opts)
-      paragraph << s unless s.empty?
-    end
-    paragraph.join(' ')
-  end
-  alias sentences paragraph
-
-  def paragraphs(opts = {})
-    quantity = opts[:paragraph_count] || rand(3..5)
-    paragraphs = []
-    quantity.times do
-      p = paragraph(opts)
-      paragraphs << p unless p.empty?
-    end
-    paragraphs.join(opts[:seperator] || "\n\n")
-  end
-
-  private
-
-  attr_reader :dictionnary, :fillers
-
-  def initialize(words, opts = {})
-    @fillers     = opts[:fillers]
-    @dictionnary = words
-  end
-
-  register_from_gem(:phobia)
-  register_from_gem(:religion)
-  register_from_gem(:fruit)
-  register_from_gem(:mineral)
-  register_from_gem(:programming_language)
 end
 
-def Crazipsum(type)
-  Crazipsum::REGISTER[type]
+# Returns a lorem ipsum generator which will generate lorem ipsums of the given
+# type.
+#
+# There are a few default types registered:
+# * `car_make`
+# * `phobia`
+# * `programming_language`
+# * `animal`
+# * `fruit`
+# * `constellation`
+# * `mineral`
+# * `religion`
+# * `country`
+#
+# You can register new types of lorem ipsum via `Crazipsum.register(type, words, fillers: fillers)`.
+#
+# @param type [Symbol,String] the type of lorem ipsum you'd like to generate.
+# @return [Crazipsum::Generator] a funky lorem ipsum generator.
+def Crazipsum(type) # rubocop:disable Naming/MethodName
+  dictionnary = Crazipsum::Registry.instance[type]
+  raise ArgumentError, 'unregistered ipsum type' if dictionnary.nil?
+
+  Crazipsum::Generator.new(dictionnary)
+end
+
+Dir[File.join(data_dir, '*')].each do |file|
+  type = File.basename(file, '.txt')
+  next if type == 'fillers'
+
+  file_content = File.read(file)
+  words = file_content.split("\n")
+
+  Crazipsum.register(type, words)
 end
